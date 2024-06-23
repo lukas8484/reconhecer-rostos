@@ -160,8 +160,6 @@ projeto/
 │   └── haarcascade-eye.xml
 │
 ├── classifier/
-│   ├── classificadorEigen.yml
-│   ├── classificadorFisher.yml
 │   └── classificadorLBPH.yml
 │
 ├── modelos/
