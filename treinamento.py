@@ -2,9 +2,7 @@ import cv2
 import os
 import numpy as np
 
-# Usando 3 algoritmos de face detect
-eigenface = cv2.face.EigenFaceRecognizer_create() # type: ignore
-fisherface = cv2.face.FisherFaceRecognizer_create() # type: ignore
+# Usando algoritmo de face detect
 lbph = cv2.face.LBPHFaceRecognizer_create() # type: ignore
 
 def getImageWithId():
@@ -40,12 +38,6 @@ def getImageWithId():
 ids, faces = getImageWithId()
 
 # Gerando classifier do treinamento
-print("Treinando....")
-eigenface.train(faces, ids)
-eigenface.write('classifier/classificadorEigen.yml')
-
-# fisherface.train(faces, ids)
-# fisherface.write('classifier/classificadorFisher.yml')
 
 lbph.train(faces, ids)
 lbph.write('classifier/classificadorLBPH.yml')
