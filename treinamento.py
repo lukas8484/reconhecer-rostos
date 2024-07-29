@@ -2,8 +2,8 @@ import cv2
 import os
 import numpy as np
 
-# Usando algoritmo de face detect
-lbph = cv2.face.LBPHFaceRecognizer_create() # type: ignore
+# Cria o classificador LBPH
+lbph = cv2.face.LBPHFaceRecognizer_create()  # type: ignore
 
 def getImageWithId():
     '''
@@ -20,6 +20,7 @@ def getImageWithId():
             
             # Extrai o ID a partir do nome do arquivo
             id = os.path.basename(pathImage).split('_')[0]
+            print(pathImage)
 
             # Verifica se o ID é numérico
             if id.isdigit():
@@ -28,17 +29,30 @@ def getImageWithId():
                 
                 # Mostra a imagem sendo treinada
                 cv2.imshow("Treinando...", imageFace)
-                cv2.waitKey(500)  # Espera 500ms para mostrar a imagem
+                cv2.waitKey(100)  # Espera 100ms para mostrar a imagem
             else:
                 print(f"O ID do arquivo {pathImage} não é numérico.")
 
     cv2.destroyAllWindows()  # Fecha todas as janelas abertas
     return np.array(ids), faces
 
-ids, faces = getImageWithId()
+def trainRecognizer():
+    '''
+    Função para treinar o classificador LBPH e salvar o modelo treinado.
+    '''
+    ids, faces = getImageWithId()  # Obtém os IDs e faces das imagens
 
-# Gerando classifier do treinamento
+    # Verifica se há pelo menos uma imagem para treinar
+    if len(ids) == 0 or len(faces) == 0:
+        print("Nenhuma imagem encontrada para treinamento.")
+        return
 
-lbph.train(faces, ids)
-lbph.write('classifier/classificadorLBPH.yml')
-print('Treinamento concluído com sucesso!')
+    # Treina o classificador LBPH com as faces e IDs obtidos
+    lbph.train(faces, ids)
+
+    # Salva o classificador treinado em um arquivo
+    lbph.write('classifier/classificadorLBPH.yml')
+    print('Treinamento concluído com sucesso!')
+
+# Chamada da função para iniciar o treinamento
+trainRecognizer()

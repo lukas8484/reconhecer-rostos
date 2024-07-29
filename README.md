@@ -135,18 +135,94 @@ Durante a execução deste script, o sistema detectará rostos em tempo real, te
 Este script utiliza a webcam para capturar imagens faciais. Ele:
 - Detecta faces e olhos utilizando Haarcascades.
 - Armazena imagens faciais em tons de cinza no diretório `fotos`.
-- Verifica se o ID já existe e atualiza ou retorna um erro.
+- Solicita ao usuário um ID e um nome para a pessoa, e então captura 70 fotos de seu rosto.
+- Verifica se o ID já existe no arquivo `info.txt` e, se existir, atualiza a entrada ou retorna um erro.
 
 ### treinamento.py
 
-Este script treina o algoritmo de reconhecimento facial utilizando o método LBPH (Local Binary Patterns Histograms).
+Este script treina o algoritmo de reconhecimento facial utilizando o método LBPH (Local Binary Patterns Histograms). Ele:
+- Carrega as imagens faciais capturadas do diretório `fotos`.
+- Cria e treina o modelo de reconhecimento facial LBPH.
+- Salva o modelo treinado no diretório `classifier` para uso futuro.
 
 ### reconhecedor.py
 
-Este script realiza o reconhecimento facial em tempo real e prevê o gênero e a idade. Ele:
-- Utiliza o classificador LBPH para reconhecimento facial.
-- Utiliza redes neurais treinadas para previsão de gênero e idade.
+Este script realiza o reconhecimento facial em tempo real e prevê o gênero e a idade das faces detectadas. Ele:
+- Utiliza a webcam para capturar vídeo em tempo real.
+- Utiliza o classificador LBPH treinado para reconhecimento facial.
+- Utiliza redes neurais pré-treinadas para previsão de gênero e idade.
 - Exibe informações no vídeo, incluindo ID, nome, confiança, gênero e idade.
+
+### aprimoramento.py
+
+Este script aprimora continuamente o sistema de reconhecimento facial, movendo e renomeando imagens de rostos desconhecidos para o diretório destinado ao armazenamento de fotos de rostos conhecidos. Ele:
+- Captura imagens de rostos desconhecidos e os armazena no diretório `estranhos`.
+- Solicita ao usuário um ID e um nome para a pessoa que deseja cadastrar.
+- Verifica se o ID e nome já existem no arquivo `info.txt`. Se não existirem, adiciona uma nova entrada.
+- Determina o último número de imagem existente para o ID e nome fornecidos.
+- Renomeia e move as imagens do diretório `estranhos` para o diretório `fotos`, seguindo a sequência numérica.
+- Atualiza o arquivo `info.txt` com o novo ID e nome, se ainda não estiverem cadastrados.
+
+
+---
+
+## Como Usar
+
+### Captura de Imagens Faciais
+
+1. Execute o script `cadastro.py`:
+    ```bash
+    python cadastro.py
+    ```
+2. Insira um identificador e um nome quando solicitado.
+3. O script capturará 70 fotos do seu rosto e as armazenará no diretório `fotos`.
+
+Durante a execução deste script, o programa captura automaticamente 70 imagens da face detectada. Para cada face capturada, você deverá fornecer um ID e um nome:
+
+- **ID**: Identificador numérico único associado à pessoa. Se for um estranho, o sistema atribuirá um ID iniciado com "00".
+- **Nome**: Nome da pessoa correspondente ao ID fornecido.
+
+Por exemplo, para capturar o rosto de João com ID 1, insira:
+
+```
+ID: 1
+Nome: João
+```
+
+Se a pessoa for desconhecida, o sistema atribuirá automaticamente um ID iniciado com "00".
+
+O sistema salvará as imagens capturadas associadas ao ID e nome fornecidos.
+
+### Treinamento dos Modelos
+
+1. Execute o script `treinamento.py`:
+    ```bash
+    python treinamento.py
+    ```
+2. O script treinará o modelo de reconhecimento facial LBPH e salvará os classificadores no diretório `classifier`.
+
+### Reconhecimento em Tempo Real
+
+1. Execute o script `reconhecedor.py`:
+    ```bash
+    python reconhecedor.py
+    ```
+2. O script iniciará a captura de vídeo, detectará e reconhecerá faces em tempo real, além de prever gênero e idade.
+
+Durante a execução deste script, o sistema detectará rostos em tempo real, tentará identificar a pessoa com base nas imagens capturadas e treinadas anteriormente, além de estimar o gênero e a idade de cada rosto detectado.
+
+### Aprimoramento Contínuo de Dados
+
+1. Execute o script `aprimoramento.py`:
+    ```bash
+    python aprimoramento.py
+    ```
+2. Insira o ID do estranho, o ID cadastrado da pessoa e o nome da pessoa quando solicitado.
+3. O script moverá e renomeará as imagens de estranhos capturadas no diretório `estranhos` para o diretório `fotos`, atualizando o arquivo `info.txt` conforme necessário.
+
+### Captura de Imagens de Estranhos
+
+Durante a execução do script reconhecedor.py, ao pressionar a tecla Enter, o sistema capturará uma imagem do rosto estranho detectado e a armazenará no diretório estranhos para aprimoramento posterior.
 
 ---
 
@@ -171,11 +247,16 @@ projeto/
 │   └── gender_net.caffemodel
 │
 ├── fotos/
-│   └── (imagens capturadas)
+│   └── (imagens dos cadastrados)
+│
+├── estranho/
+│   └── (imagens dos estranhos capturados)
 │
 ├── cadastro.py
 ├── treinamento.py
-└── reconhecedor.py
+├── reconhecedor.py
+└── aprimoramento.py
+
 ```
 
 ---

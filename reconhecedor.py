@@ -6,6 +6,7 @@ import numpy as np
 from datetime import datetime
 from collections import deque, Counter
 from colorama import init, Fore
+import os
 
 # Inicializar colorama
 init()
@@ -65,7 +66,6 @@ face_info = {}
 # Variáveis para armazenar o último log registrado
 last_log = {}
 
-
 # Próximo ID a ser atribuído
 next_id = 1
 next_unknown_id = 1
@@ -73,15 +73,21 @@ next_unknown_id = 1
 # Variável de filtro
 frames_to_confirm = 500  # Ajuste este valor para mais precisão ou reatividade
 
+# Criar pasta para armazenar imagens de desconhecidos
+if not os.path.exists('estranhos'):
+    os.makedirs('estranhos')
+
+# Função para calcular a média móvel ponderada
 def weighted_moving_average(values, alpha=0.6):
-    """
-    Calcula a média móvel ponderada com fator de suavização alpha.
-    """
     avg = 0
     for i in range(len(values)):
         avg = alpha * values[i] + (1 - alpha) * avg
     return avg
 
+# Contador de imagens para cada desconhecido
+unknown_counters = {}
+
+os.system('clear')
 while True:
     conectado, imagem = camera.read()
     imageGray = cv2.cvtColor(imagem, cv2.COLOR_BGR2GRAY)
@@ -136,15 +142,40 @@ while True:
                     break
 
             if not found_match:
+                #Capturar estranho apenas quando a tecla K é pressionada
                 unknown_id = f"00{next_unknown_id}"
                 face_ids[unknown_id] = ((x, y, w, h), (x, y, w, h))
                 id = unknown_id
                 confianca = 0
                 next_unknown_id += 1
+            else:
+           
+                confianca = 0
 
             name = 'Estranho'
             log_color = Fore.RED  # Vermelho para desconhecido
             rectangle_color = (0, 0, 255)  # Vermelho para desconhecido
+        
+        key = cv2.waitKey(1)
+
+        if key == 13:  # Capturar estranhos apenas quando a tecla K é pressionada
+            # Salvar imagem do estranho
+            if unknown_id not in unknown_counters:
+                unknown_counters[unknown_id] = 1
+            else:
+                unknown_counters[unknown_id] += 1
+
+            # Recortar a face e converter para preto e branco
+            face_crop = imagem[y:y+h, x:x+w]
+            face_crop_gray = cv2.cvtColor(face_crop, cv2.COLOR_BGR2GRAY)
+
+            # Definir o nome do arquivo
+            filename = f'estranhos/{unknown_id}_{unknown_counters[unknown_id]}.jpg'
+
+            # Salvar a imagem em preto e branco
+            cv2.imwrite(filename, face_crop_gray)
+            print(f'Imagem do estranho salva: {filename}')
+
 
         # Adicionar detecção de idade e gênero
         face = imagem[max(0, y - 20):min(y + h + 20, imagem.shape[0] - 1), max(0, x - 20):min(x + w + 20, imagem.shape[1] - 1)]
@@ -199,7 +230,7 @@ while True:
 
         # Definir texto a ser exibido para ID, nome e porcentagem de confiança
         display_text = f"ID: {id}, {name}, {int(confianca_pct)}%"
-        (text_width,         text_height), _ = cv2.getTextSize(display_text, font, fontScale=1, thickness=1)
+        (text_width, text_height), _ = cv2.getTextSize(display_text, font, fontScale=1, thickness=1)
         text_x = x
         text_y = y - 10
         text_bg_width = text_width + 10
@@ -228,10 +259,13 @@ while True:
         cv2.putText(imagem, gender_age_text, (gender_age_text_x + 5, gender_age_text_y - 5), font, 1, (255, 255, 255), 1, cv2.LINE_AA)
 
     # Mostrando frame
-    cv2.imshow("Face", imagem)
+    cv2.imshow("Reconhecedor", imagem)
     if cv2.waitKey(1) == ord('q'):
+        break
+
+    # Verificar se a janela foi fechada pelo botão de fechar (X)
+    if cv2.getWindowProperty('Reconhecedor', cv2.WND_PROP_VISIBLE) < 1:
         break
 
 camera.release()
 cv2.destroyAllWindows()
-
