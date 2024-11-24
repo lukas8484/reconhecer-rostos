@@ -5,7 +5,7 @@
 Este projeto utiliza a biblioteca OpenCV em Python para criar um sistema avançado de detecção e reconhecimento facial. Ele abrange desde a captura de imagens faciais até o treinamento de modelos de reconhecimento facial e a detecção em tempo real, incluindo previsões de gênero e idade.
 
 <p align="center">
-    <img src="/home/lukas/Documents/Face-Scan-Id/exemplos/exemplo_3.png" alt="Exemplo" height="290px">
+    <img src="/home/lukas/Documents/Face-Scan-Id/exemplo_3.png" alt="Exemplo" height="290px">
 </p>
 
 ---
@@ -21,7 +21,7 @@ Visão Computacional é o campo que permite aos computadores verem e identificar
 Este projeto em Python utiliza técnicas avançadas de Deep Learning para identificar com precisão o sexo e a idade de uma pessoa a partir de uma única imagem facial. Os modelos utilizados foram treinados por Tal Hassner e Gil Levi. O sistema prevê o gênero como 'Masculino' ou 'Feminino' e a idade em faixas que variam de (0–2) até (60–100).
 
 <p align="center">
-    <img src="/home/lukas/Documents/Face-Scan-Id/exemplos/exemplo_2.png" alt="Exemplo" height="435px">
+    <img src="/home/lukas/Documents/Face-Scan-Id/exemplo_2.png" alt="Exemplo" height="435px">
 </p>
 
 ---
@@ -123,7 +123,7 @@ O sistema salvará as imagens capturadas associadas ao ID e nome fornecidos.
 Durante a execução deste script, o sistema detectará rostos em tempo real, tentará identificar a pessoa com base nas imagens capturadas e treinadas anteriormente, além de estimar o gênero e a idade de cada rosto detectado.
 
 <p align="center">
-    <img src="/home/lukas/Documents/Face-Scan-Id/exemplos/exemplo_1.png" alt="Exemplo" height="360px">
+    <img src="/home/lukas/Documents/Face-Scan-Id/exemplo_1.png" alt="Exemplo" height="360px">
 </p>
 
 ---
